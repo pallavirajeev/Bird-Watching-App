@@ -16,6 +16,10 @@
             width: 100%;
             border-radius: 5px;
         }
+        .leaflet-draw-tooltip {
+            display: none !important;
+        }
+        
         .leaflet-draw-draw-rectangle::before {
             content: '\f0c8'; 
             font-family: 'Font Awesome 6 Free';
@@ -210,10 +214,13 @@
                         shapeOptions: {
                             color: 'blue',
                         },
+                        tooltip: false
                     },
                 },
                 edit: {
                     featureGroup: drawnItems,
+                    remove: true,  // Enable only remove (delete) option
+                    edit: false,
                 },
             });
             map.addControl(drawControl);
@@ -230,6 +237,13 @@
                 const bounds = layer.getBounds();
                 console.log('Selected Region Bounds:', bounds);
             });
+
+            // Handle feature deletion
+            map.on(L.Draw.Event.DELETED, (event) => {
+                console.log('Feature(s) removed:', event.layers);
+                drawnItems.clearLayers(); // Clears all features
+            });
+      
 
             // Clear coordinates functionality
             clearCoordinatesButton.addEventListener('click', () => {
