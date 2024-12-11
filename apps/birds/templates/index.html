@@ -67,13 +67,6 @@
             let selectedMarker = null;
             let drawnItems = new L.FeatureGroup();
             let heat;
-
-            // Sample bird density data (latitude, longitude, and intensity)
-            // const birdSightings = [
-            //     { lat: 36.9741, lng: -122.0308, count: 5 }, 
-            //     { lat: 36.9742, lng: -122.0309, count: 8 },
-            //     { lat: 36.9739, lng: -122.0310, count: 3 },
-            // ];
             
             // Fetch species from the backend and populate the dropdown
         async function fetchAndPopulateSpeciesDropdown() {
@@ -153,18 +146,6 @@
             // Add feature group for drawings
             map.addLayer(drawnItems);
 
-            // // Create heatmap layer
-            // const heatmapData = birdSightings.map(sighting => {
-            //     return [sighting.lat, sighting.lng, sighting.count]; // [lat, lng, intensity]
-            // });
-
-            // // Add heatmap to map
-            // const heat = L.heatLayer(heatmapData, {
-            //     radius: 25,
-            //     blur: 15,
-            //     maxZoom: 19,
-            // }).addTo(map);
-
 
             // Add feature group for drawings
             map.addLayer(drawnItems);
@@ -231,7 +212,6 @@
             });
 
             // Populate species dropdown on load
-            // populateSpeciesDropdown();
             fetchAndPopulateSpeciesDropdown();
 
         });
