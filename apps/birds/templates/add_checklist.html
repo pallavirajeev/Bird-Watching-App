@@ -10,6 +10,10 @@
         [v-cloak] {
             display: none;
         }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -52,10 +56,16 @@
                         />
                     </td>
                     <td>
-                        <button
-                            class="button is-small is-info"
-                            @click="incrementCount(species)"
-                        >+1</button>
+                        <div class="button-group">
+                            <button
+                                class="button is-small is-info"
+                                @click="incrementCount(species)"
+                            >+1</button>
+                            <button
+                                class="button is-small is-warning"
+                                @click="decrementCount(species)"
+                            >-1</button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -194,6 +204,13 @@
                     this.speciesName = species.COMMON_NAME; // Automatically set the species name
                     this.updateObservationCount();
                 },
+                decrementCount(species) {
+                    if (!species.count) species.count = 0;
+                    if (species.count > 0) {
+                        species.count--;
+                    }
+                    this.updateObservationCount();
+                },
                 updateObservationCount() {
                     this.observationCount = this.filteredSpecies.reduce((total, species) => {
                         return total + (species.count || 0);
@@ -248,4 +265,3 @@
     </script>
 </body>
 </html>
-
