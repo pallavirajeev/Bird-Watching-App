@@ -141,7 +141,7 @@
             fetchDensity();
 
             // Update heatmap when map moves or zooms
-            map.on('moveend', fetchBirdSightings);
+            map.on('moveend', fetchDensity);
 
             // Add feature group for drawings
             map.addLayer(drawnItems);
