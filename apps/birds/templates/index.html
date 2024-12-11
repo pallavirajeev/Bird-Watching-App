@@ -66,13 +66,14 @@
             const themeToggleButton = document.getElementById('theme-toggle');
             let selectedMarker = null;
             let drawnItems = new L.FeatureGroup();
+            let heat;
 
             // Sample bird density data (latitude, longitude, and intensity)
-            const birdSightings = [
-                { lat: 36.9741, lng: -122.0308, count: 5 }, 
-                { lat: 36.9742, lng: -122.0309, count: 8 },
-                { lat: 36.9739, lng: -122.0310, count: 3 },
-            ];
+            // const birdSightings = [
+            //     { lat: 36.9741, lng: -122.0308, count: 5 }, 
+            //     { lat: 36.9742, lng: -122.0309, count: 8 },
+            //     { lat: 36.9739, lng: -122.0310, count: 3 },
+            // ];
             
             // Fetch species from the backend and populate the dropdown
         async function fetchAndPopulateSpeciesDropdown() {
@@ -94,6 +95,49 @@
                 console.error('Error fetching species:', error);
             }
         }
+
+        async function fetchDensity() {
+            const bounds = map.getBounds();
+            const north = bounds.getNorth();
+            const south = bounds.getSouth();
+            const east = bounds.getEast();
+            const west = bounds.getWest();
+
+            try {
+            const response = await fetch('/birds/get_density', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ north, south, east, west })
+            });
+            const data = await response.json();
+
+            // Transform sightings into heatmap format
+            const heatmapData = data.sightings.map(sighting => {
+                return [
+                    parseFloat(sighting.lat), 
+                    parseFloat(sighting.lon), 
+                    sighting.intensity || 1
+                ];
+            });
+
+            // Remove existing heatmap layer if it exists
+            if (heat) {
+                map.removeLayer(heat);
+            }
+
+            // Create new heatmap layer
+            heat = L.heatLayer(heatmapData, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 19,
+            }).addTo(map);
+
+            } catch (error) {
+            console.error('Error fetching bird density:', error);
+            }
+        }
             // Initialize map
             const map = L.map('map').setView([36.9741, -122.0308], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -101,17 +145,25 @@
                 maxZoom: 19,
             }).addTo(map);
 
-            // Create heatmap layer
-            const heatmapData = birdSightings.map(sighting => {
-                return [sighting.lat, sighting.lng, sighting.count]; // [lat, lng, intensity]
-            });
+            fetchDensity();
 
-            // Add heatmap to map
-            const heat = L.heatLayer(heatmapData, {
-                radius: 25,
-                blur: 15,
-                maxZoom: 19,
-            }).addTo(map);
+            // Update heatmap when map moves or zooms
+            map.on('moveend', fetchBirdSightings);
+
+            // Add feature group for drawings
+            map.addLayer(drawnItems);
+
+            // // Create heatmap layer
+            // const heatmapData = birdSightings.map(sighting => {
+            //     return [sighting.lat, sighting.lng, sighting.count]; // [lat, lng, intensity]
+            // });
+
+            // // Add heatmap to map
+            // const heat = L.heatLayer(heatmapData, {
+            //     radius: 25,
+            //     blur: 15,
+            //     maxZoom: 19,
+            // }).addTo(map);
 
 
             // Add feature group for drawings

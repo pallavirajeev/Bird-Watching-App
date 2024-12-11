@@ -222,3 +222,43 @@ def get_species_details():
         locations=locations,
         counts=dates_count
     )
+@action('get_density', method=['POST'])
+@action.uses(db, auth.user, url_signer)
+def get_density():
+    north = request.json.get('north')
+    south = request.json.get('south')
+    east = request.json.get('east')
+    west = request.json.get('west')
+
+    sightings = db(
+        (db.checklist.LATITUDE <= north) & 
+        (db.checklist.LATITUDE >= south) &
+        (db.checklist.LONGITUDE <= east) &
+        (db.checklist.LONGITUDE >= west) &
+        (db.sightings.SAMPLING_EVENT_IDENTIFIER == db.checklist.SAMPLING_EVENT_IDENTIFIER)
+    ).select(
+        db.checklist.LATITUDE,
+        db.checklist.LONGITUDE,
+        db.checklist.OBSERVER_ID,
+        db.checklist.OBSERVATION_DATE,
+        db.sightings.COMMON_NAME,
+        db.sightings.OBSERVATION_COUNT
+    )
+
+    sightings_list = []
+    for row in sightings:
+        try:
+            intensity = int(row.sightings.OBSERVATION_COUNT)
+        except (ValueError, TypeError):
+            intensity = 0
+        
+        sightings_list.append({
+            'species': row.sightings.COMMON_NAME,
+            'lat': row.checklist.LATITUDE,
+            'lon': row.checklist.LONGITUDE,
+            'obs_id': row.checklist.OBSERVER_ID,
+            'date': row.checklist.OBSERVATION_DATE,
+            'intensity': intensity
+        })
+
+    return dict(sightings=sightings_list)
