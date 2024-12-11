@@ -16,26 +16,36 @@
             width: 100%;
             border-radius: 5px;
         }
-        /* .leaflet-draw-draw-rectangle {
-        background: url('https://cdn-icons-png.flaticon.com/512/565/565297.png') no-repeat center center;
-        background-size: contain;
-        width: 15px;
-        height: 15px;
+        .leaflet-draw-draw-rectangle::before {
+            content: '\f0c8'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 100; 
+            display: inline-block;
+            font-size: 15px;
+            line-height: 1; 
+            text-align: center;
         }
 
-        .leaflet-draw-edit-edit {
-            background: url('https://cdn-icons-png.flaticon.com/512/1828/1828911.png') no-repeat center center;
-            background-size: contain;
-            width: 15px;
-            height: 15px;
+        .leaflet-draw-edit-edit::before {
+            content: '\f044'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            display: inline-block;
+            font-size: 15px;
+            line-height: 1;
+            text-align: center;
         }
 
-        .leaflet-draw-edit-remove {
-            background: url('https://cdn-icons-png.flaticon.com/512/1828/1828843.png') no-repeat center center;
-            background-size: contain;
-            width: 15px;
-            height: 15px;
-        } */
+        .leaflet-draw-edit-remove::before {
+            content: '\f2ed'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            display: inline-block;
+            font-size: 15px;
+            line-height: 1;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
