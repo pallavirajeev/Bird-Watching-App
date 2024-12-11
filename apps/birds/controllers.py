@@ -36,6 +36,8 @@ url_signer = URLSigner(session)
 @action('index')
 @action.uses('index.html', db, auth, url_signer)
 def index():
+    if not auth.current_user:
+        redirect(URL('auth/login'))
     return dict(
         my_callback_url = URL('my_callback', signer=url_signer),
     )
