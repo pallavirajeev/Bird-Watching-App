@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bird Watcher</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
     <style>
@@ -56,6 +57,7 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const speciesSelect = document.getElementById('species-select');
@@ -65,22 +67,13 @@
             let selectedMarker = null;
             let drawnItems = new L.FeatureGroup();
 
-            // // Initialize species dropdown
-            // const speciesList = [
-            //     { id: 'sparrow', name: 'Sparrow' },
-            //     { id: 'eagle', name: 'Eagle' },
-            //     { id: 'pigeon', name: 'Pigeon' },
-            //     { id: 'robin', name: 'Robin' },
-            // ];
-
-            // function populateSpeciesDropdown() {
-            //     speciesList.forEach(species => {
-            //         const option = document.createElement('option');
-            //         option.value = species.id;
-            //         option.textContent = species.name;
-            //         speciesSelect.appendChild(option);
-            //     });
-            // }
+            // Sample bird density data (latitude, longitude, and intensity)
+            const birdSightings = [
+                { lat: 36.9741, lng: -122.0308, count: 5 }, 
+                { lat: 36.9742, lng: -122.0309, count: 8 },
+                { lat: 36.9739, lng: -122.0310, count: 3 },
+            ];
+            
             // Fetch species from the backend and populate the dropdown
         async function fetchAndPopulateSpeciesDropdown() {
             try {
@@ -107,6 +100,19 @@
                 attribution: '&copy; OpenStreetMap contributors',
                 maxZoom: 19,
             }).addTo(map);
+
+            // Create heatmap layer
+            const heatmapData = birdSightings.map(sighting => {
+                return [sighting.lat, sighting.lng, sighting.count]; // [lat, lng, intensity]
+            });
+
+            // Add heatmap to map
+            const heat = L.heatLayer(heatmapData, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 19,
+            }).addTo(map);
+
 
             // Add feature group for drawings
             map.addLayer(drawnItems);
