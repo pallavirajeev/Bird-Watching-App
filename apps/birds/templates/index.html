@@ -19,7 +19,7 @@
         .leaflet-draw-tooltip {
             display: none !important;
         }
-        
+
         .leaflet-draw-draw-rectangle::before {
             content: '\f0c8'; 
             font-family: 'Font Awesome 6 Free';
@@ -49,6 +49,9 @@
             line-height: 1;
             text-align: center;
         }
+        #welcome-popup.modal {
+            z-index: 1000 !important;
+        }
 
     </style>
 </head>
@@ -64,7 +67,7 @@
             <div class="control">
                 <div class="select">
                     <select id="species-select">
-                        <option value="">Select a Species</option>
+                        <option value="">View All Species</option>
                         <!-- Dynamically populated species -->
                     </select>
                 </div>
@@ -86,6 +89,29 @@
             <a href="/birds/stats" class="button is-primary">My Birding Stats</a>
         </div>
 
+        <div id="welcome-popup" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Welcome to Bird Watcher</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <p>Discover, Track, and Explore the World of Birds!</p>
+                    <div class="content has-text-left">
+                        <ul>
+                            <li>Explore interactive bird density maps and view the dropdown of all contributing species</li>
+                            <li>Create and manage bird sighting checklists to log all your observations </li>
+                            <li>Track your birding journey with statistics on all bird sighting featuring trend charts</li>
+                        </ul>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button id="close-welcome-popup" class="button is-success">Got it!</button>
+                </footer>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -102,6 +128,34 @@
             let selectedMarker = null;
             let drawnItems = new L.FeatureGroup();
             let heat;
+
+            const welcomePopup = document.getElementById('welcome-popup');
+            const closePopupButton = document.getElementById('close-welcome-popup');
+            const modalCloseButton = welcomePopup.querySelector('.delete');
+
+            // Function to open popup
+            function openWelcomePopup() {
+                // // Check if popup has been shown before
+                // const hasShownBefore = localStorage.getItem('welcomePopupShown');
+                // if (!hasShownBefore) {
+                //     welcomePopup.classList.add('is-active');
+                // }
+                welcomePopup.classList.add('is-active');
+
+            }
+
+            // Function to close popup
+            function closeWelcomePopup() {
+                welcomePopup.classList.remove('is-active');
+                localStorage.setItem('welcomePopupShown', 'true');
+            }
+
+            // Open popup on page load
+            openWelcomePopup();
+
+            // Close popup when clicking close button
+            closePopupButton.addEventListener('click', closeWelcomePopup);
+            modalCloseButton.addEventListener('click', closeWelcomePopup);
             
             // Fetch species from the backend and populate the dropdown
         async function fetchAndPopulateSpeciesDropdown() {
