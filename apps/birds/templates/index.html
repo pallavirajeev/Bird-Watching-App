@@ -135,12 +135,14 @@
 
             // Function to open popup
             function openWelcomePopup() {
-                // // Check if popup has been shown before
-                // const hasShownBefore = localStorage.getItem('welcomePopupShown');
-                // if (!hasShownBefore) {
-                //     welcomePopup.classList.add('is-active');
-                // }
-                welcomePopup.classList.add('is-active');
+                // Check if popup has been shown before
+                const hasShownBefore = localStorage.getItem('welcomePopupShown');
+                if (!hasShownBefore) {
+                    welcomePopup.classList.add('is-active');
+                }
+                //welcomePopup.classList.add('is-active');
+                localStorage.setItem('welcomePopupShown', 'true');
+
 
             }
 
